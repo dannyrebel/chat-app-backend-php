@@ -1,0 +1,40 @@
+# Dependencies
+vendor/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Session and cookie files
+cookies.txt
+sessions/
+*.session
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+cache/
+
+# User uploads (if you add file uploads later)
+uploads/
+storage/
