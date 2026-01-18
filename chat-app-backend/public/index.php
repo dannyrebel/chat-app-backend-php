@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 require dirname(__DIR__) . '/vendor/autoload.php';
 require dirname(__DIR__) . '/src/Database.php';
 
+
 $app = AppFactory::create();
 
 $app->addBodyParsingMiddleware();
@@ -18,17 +19,13 @@ require __DIR__ . '/../src/routes/groups.php';
 require __DIR__ . '/../src/routes/group_join.php';
 require __DIR__ . '/../src/routes/messages.php';
 
-
-$app->get('/', function(Request $request, Response $response){
-
-    try {
-        db()->query('SELECT 1');
-        $response->getBody()->write('✅ DB connected successfully');
-    } catch (Throwable $e) {
-        $response->getBody()->write('❌ DB error: ' . $e->getMessage());
-    }
-
+$app->get('/', function (Request $request, Response $response) {
+    $response->getBody()->write('API is running');
     return $response;
 });
 
-$app->run();
+if (!debug_backtrace()) {
+    $app->run();
+} else {
+    return $app;
+}
