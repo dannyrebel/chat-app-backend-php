@@ -95,7 +95,7 @@ POST http://localhost:8000/groups/{id}/join
 }
 ```
 
-### 3. Send a message to group
+### 4. Send a message to group
 
 **Description**
 
@@ -131,17 +131,17 @@ curl (curl.exe for Windows) -i -c cookies.txt -X POST http://localhost:8000/user
 
 curl (curl.exe for Windows) -X POST http://localhost:8000/groups
 
-## Step 2: Use that session to join a group
+## Step 3: Use that session to join a group
 
 curl (curl.exe for Windows) -i -b cookies.txt -X POST http://localhost:8000/groups/1/join
 
-## Step 3: Send a message to the joined group
+## Step 4: Send a message to the joined group
 
 curl (curl.exe for Windows) -i -b cookies.txt -X POST http://localhost:8000/groups/1/messages -H "Content-Type: application/json" -d "@message.json"
 
 I have created a message.json file due to Powershell issues with testing - you can edit the message there as you please.
 
-## Step 4: Fetch all messages from the joined group
+## Step 5: Fetch all messages from the joined group
 
 curl (curl.exe for windows) -i -b cookies.txt -X GET http://localhost:8000/groups/1/messages
 
