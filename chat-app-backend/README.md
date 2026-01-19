@@ -99,8 +99,8 @@ POST http://localhost:8000/groups/{id}/join
 
 ## Step 0: Initialize DB + Test.
 
-php scripts/create_chat_tables.php
-php scripts/check_tables_creation.php - returns names of all tables created
+- php scripts/create_chat_tables.php
+- php scripts/check_tables_creation.php - returns names of all tables created
 
 ## Step 1: Create user and save session
 
