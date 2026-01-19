@@ -40,8 +40,7 @@ Creates a new user and stores their ID in the PHP session. No request body neede
 ```json
 {
   "success": true,
-  "id": "user_63d1e2f8a7b9c",
-  "message": "You are now the current user in this session"
+  "id": "user_63d1e2f8a7b9c"
 }
 ```
 
