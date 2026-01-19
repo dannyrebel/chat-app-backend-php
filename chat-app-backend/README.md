@@ -95,6 +95,27 @@ POST http://localhost:8000/groups/{id}/join
 }
 ```
 
+### 3. Send a message to group
+
+**Description**
+
+Sends a message to the group - if current user has joined that group.
+
+**Endpoint**
+
+POST http://localhost:8000/groups/{id}/messages
+
+**Response**
+
+```json
+{
+"success":true,
+"group_id":"1",
+"user_id":"user_696ddf0bcd95f",
+"message":"Hello from the group!"
+}
+```
+
 #### Example test in terminal
 
 ## Step 0: Initialize DB + Test.
