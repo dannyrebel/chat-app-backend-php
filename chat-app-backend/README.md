@@ -16,8 +16,10 @@ Unit tests with **PHPunit**.
 │ ├─ groups.php # Group creation route
 │ └─ group_join.php # Join group route
 | └─ messages.php # Create & read messages
+├─ tests/UserRouteTest.php
 ├─ public/index.php # root
 ├─ composer.json
+├─ phpunit.xml - # PHPUnit tests config file
 └─ storage/database.sqlite # SQLite database file
 ```
 
