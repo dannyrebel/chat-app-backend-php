@@ -2,33 +2,16 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Controller\UserController;
+use App\Model\User;
 
 // Route to create a user
 $app->post('/users', function(Request $request, Response $response){
-    $db = db();
-    $userId = uniqid('user_');
+  $db = db();
 
-    try{
-        $db->insert('users', [
-            'id' => $userId
-        ]);
+  $userModel = new User($db);
 
-        $_SESSION['user_id'] = $userId;
+  $controller = new UserController($userModel);
 
-        $data = [
-            'success' => true,
-            'id' => $userId
-        ];
-
-        $response->getBody()->write(json_encode($data));
-        return $response->withHeader('Content-Type', 'application/json');
-    } catch (Throwable $e){
-                $data = [
-            'success' => false,
-            'error' => $e->getMessage()
-        ];
-
-        $response->getBody()->write(json_encode($data));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
-    }
+  return $controller->createUser($request, $response);
 });
