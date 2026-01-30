@@ -4,22 +4,23 @@ namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Model\User;
+use App\Repository\UserRepository;
 use Throwable;
 
 class UserController{
-  private $userModel;
+  private $userRepository;
 
-  public function __construct(User $userModel)
+  public function __construct(UserRepository $userRepository)
   {
-    $this->userModel = $userModel;
+    $this->userRepository = $userRepository;
   }
 
   public function createUser(Request $request, Response $response){
 
     try{
-      $userId = $this->userModel->create();
-
+      $user = $this->userRepository->create();
+      $userId = $user->getId();
+      
       $_SESSION['user_id'] = $userId;
 
       $data = [
