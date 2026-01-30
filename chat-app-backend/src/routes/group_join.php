@@ -2,14 +2,14 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Controller\GroupJoinController;
-use App\Model\GroupJoin;
+use App\Controller\GroupMemberController;
+use App\Repository\GroupMemberRepository;
 
 $app->post('/groups/{id}/join', function(Request $request, Response $response, $args){
-  $db = db();
+  $em = em();
 
-  $groupJoinModel = new GroupJoin($db);
-  $controller = new GroupJoinController($groupJoinModel);
+  $groupMemberRepository = new GroupMemberRepository($em);
+  $controller = new GroupMemberController($groupMemberRepository);
 
   return $controller->joinGroup($request, $response, $args);
 });
