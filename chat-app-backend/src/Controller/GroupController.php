@@ -4,15 +4,16 @@ namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Model\Group;
+use App\Repository\Group;
+use App\Repository\GroupRepository;
 use Throwable;
 
 class GroupController{
-  private $groupModel;
+  private $groupRepository;
 
-  public function __construct(Group $groupModel)
+  public function __construct(GroupRepository $groupRepository)
   {
-    $this->groupModel = $groupModel;
+    $this->groupRepository = $groupRepository;
   }
 
   public function createGroup(Request $request, Response $response){
@@ -20,12 +21,12 @@ class GroupController{
     $name = $body['name'] ?? 'Unnamed group';
 
     try{
-      $group = $this->groupModel->create($name);
+      $group = $this->groupRepository->create($name);
 
       $data = [
         'success' => true,
-        'id' => $group['id'],
-        'name' => $group['name']
+        'id' => $group->getId(),
+        'name' => $group->getName()
       ];
 
       $response->getBody()->write(json_encode($data));

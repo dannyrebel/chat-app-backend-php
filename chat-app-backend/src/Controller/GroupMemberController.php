@@ -4,19 +4,19 @@ namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Model\GroupJoin;
+use App\Repository\GroupMemberRepository;
 use Throwable;
 
-class GroupJoinController{
-  private $groupJoinModel;
+class GroupMemberController{
+  private $groupMemberRepository;
 
-  public function __construct(GroupJoin $groupJoinModel)
+  public function __construct(GroupMemberRepository $groupMemberRepository)
   {
-    $this->groupJoinModel = $groupJoinModel;
+    $this->groupMemberRepository = $groupMemberRepository;
   }
 
   public function joinGroup(Request $request, Response $response, $args){
-    $groupId = $args['id'];
+    $groupId = (int)$args['id'];
     $userId = $_SESSION['user_id'] ?? null;
 
     // Validate if user is logged
@@ -41,7 +41,7 @@ class GroupJoinController{
         }
 
       try{
-        $existing = $this->groupJoinModel->findMembership($groupId, $userId);
+        $existing = $this->groupMemberRepository->findMembership($groupId, $userId);
 
         // Validate if user is already in the group
         if($existing){
@@ -54,12 +54,12 @@ class GroupJoinController{
         }
 
         // join group
-        $this->groupJoinModel->joinGroup($groupId, $userId);
+       $groupMember =  $this->groupMemberRepository->addMember($groupId, $userId);
 
         $data = [
                 'success' => true,
-                'group_id' => $groupId,
-                'user_id' => $userId
+                'group_id' => $groupMember->getGroup()->getId(),
+                'user_id' => $groupMember->getUser()->getId()
             ];
 
           $response->getBody()->write(json_encode($data));

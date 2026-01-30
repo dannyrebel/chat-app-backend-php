@@ -5,20 +5,21 @@ namespace App\Controller;
 use App\Model\GroupJoin;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Model\Messages;
+use App\Repository\MessageRepository;
+use App\Repository\GroupMemberRepository;
 use Throwable;
 
 class MessagesController{
-  private $messagesModel;
-  private $groupJoinModel;
+  private $messageRepository;
+  private $groupMemberRepository;
 
-  public function __construct(Messages $messagesModel, GroupJoin $groupJoinModel){
-    $this->messagesModel = $messagesModel;
-    $this->groupJoinModel = $groupJoinModel;
+  public function __construct(MessageRepository $messageRepository, GroupMemberRepository $groupMemberRepository){
+    $this->messageRepository = $messageRepository;
+    $this->groupMemberRepository = $groupMemberRepository;
   }
 
   public function createMessage(Request $request, Response $response, $args){
-    $groupId = $args['id'];
+    $groupId = (int)$args['id'];
     $userId = $_SESSION['user_id'] ?? null;
 
     // Validation: Check if user is logged in
@@ -34,7 +35,7 @@ class MessagesController{
      try{
 
      // Validation: Check if user is a member of the group
-      $existing = $this->groupJoinModel->findMembership($groupId, $userId);
+      $existing = $this->groupMemberRepository->findMembership($groupId, $userId);
       
       if (!$existing) {
           $data = [
@@ -59,13 +60,13 @@ class MessagesController{
             }
 
         // Create the message
-        $this->messagesModel->createMessage($groupId, $userId, $message);
+        $message = $this->messageRepository->create($groupId, $userId, $message);
 
         $data = [
                 'success' => true,
-                'group_id' => $groupId,
-                'user_id' => $userId,
-                'message' => $message
+                'group_id' => $message->getGroup()->getId(),
+                'user_id' => $message->getUser()->getId(),
+                'message' => $message->getContent()
             ];
             
           $response->getBody()->write(json_encode($data));
@@ -81,14 +82,23 @@ class MessagesController{
   }
 
   public function getMessages(Request $request, Response $response, $args){
-    $groupId = $args['id'];
+    $groupId = (int)$args['id'];
 
     try{
-      $messages = $this->messagesModel->getMessages($groupId);
+      $messages = $this->messageRepository->findByGroupId($groupId);
+
+      $messagesData = array_map(function($message) {
+          return [
+              'id' => $message->getId(),
+              'group_id' => $message->getGroup()->getId(),
+              'user_id' => $message->getUser()->getId(),
+              'content' => $message->getContent()
+          ];
+      }, $messages);
 
       $data = [
                 'success' => true,
-                'messages' => $messages
+                'messages' => $messagesData
             ];
             
             $response->getBody()->write(json_encode($data));
