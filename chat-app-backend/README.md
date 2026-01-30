@@ -111,12 +111,24 @@ POST http://localhost:8000/groups/{id}/messages
 
 ```json
 {
-"success":true,
-"group_id":"1",
-"user_id":"user_696ddf0bcd95f",
-"message":"Hello from the group!"
+  "success": true,
+  "group_id": "1",
+  "user_id": "user_696ddf0bcd95f",
+  "message": "Hello from the group!"
 }
 ```
+
+#### Example test via web page
+
+## Step 1: Launch server on localhost:8000
+
+php -S localhost:8000 -t public
+
+## Step 2: open the test-flow-jwt.html or click the link below
+
+http://localhost:8000/test-flow-jwt.html
+
+## Step 3: Click each button sequentally to test each step
 
 #### Example test in terminal
 
@@ -125,9 +137,9 @@ POST http://localhost:8000/groups/{id}/messages
 - php scripts/create_chat_tables.php
 - php scripts/check_tables_creation.php - returns names of all tables created
 
-## Step 1: Create user and save session
+## Step 1: Create user and save JWT token
 
-curl (curl.exe for Windows) -i -c cookies.txt -X POST http://localhost:8000/users
+curl (curl.exe for windows) -X POST http://localhost:8000/users
 
 ## Step 2: Create a chat group
 
@@ -135,17 +147,15 @@ curl (curl.exe for Windows) -X POST http://localhost:8000/groups
 
 ## Step 3: Use that session to join a group
 
-curl (curl.exe for Windows) -i -b cookies.txt -X POST http://localhost:8000/groups/1/join
+curl (curl.exe for Windows) -X POST http://localhost:8000/groups/1/join -H "Authorization: Bearer YOUR_TOKEN_HERE"
 
 ## Step 4: Send a message to the joined group
 
-curl (curl.exe for Windows) -i -b cookies.txt -X POST http://localhost:8000/groups/1/messages -H "Content-Type: application/json" -d "@message.json"
-
-I have created a message.json file due to Powershell issues with testing - you can edit the message there as you please.
+curl (curl.exe for windows) -X POST http://localhost:8000/groups/1/messages -H "Authorization: Bearer YOUR_TOKEN_HERE" -H "Content-Type: application/json" -d "{\"message\":\"I built this with Doctrine and JWT!\"}"
 
 ## Step 5: Fetch all messages from the joined group
 
-curl (curl.exe for windows) -i -b cookies.txt -X GET http://localhost:8000/groups/1/messages
+curl (curl.exe for windows) http://localhost:8000/groups/1/messages
 
 ## Unit tests
 
