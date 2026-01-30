@@ -20,7 +20,7 @@ class MessagesController{
 
   public function createMessage(Request $request, Response $response, $args){
     $groupId = (int)$args['id'];
-    $userId = $_SESSION['user_id'] ?? null;
+    $userId = $request->getAttribute('user_id');
 
     // Validation: Check if user is logged in
         if (!$userId) {

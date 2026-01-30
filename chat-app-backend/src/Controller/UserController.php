@@ -6,13 +6,16 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Repository\UserRepository;
 use Throwable;
+use App\Service\JwtService;
 
 class UserController{
   private $userRepository;
+  private $jwtService;
 
-  public function __construct(UserRepository $userRepository)
+  public function __construct(UserRepository $userRepository, JwtService $jwtService)
   {
     $this->userRepository = $userRepository;
+    $this->jwtService = $jwtService;
   }
 
   public function createUser(Request $request, Response $response){
@@ -21,11 +24,12 @@ class UserController{
       $user = $this->userRepository->create();
       $userId = $user->getId();
       
-      $_SESSION['user_id'] = $userId;
+      $token = $this->jwtService->generateToken($userId);
 
       $data = [
         'success' => true,
-        'id' => $userId
+        'id' => $userId,
+        'token' => $token
       ];
 
       $response->getBody()->write(json_encode($data));

@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Test JWT Authentication + Doctrine ORM</h2>
+
+    <button onclick="createUser()">1. Create User (Get Token)</button>
+    <button onclick="createGroup()">2. Create Group</button>
+    <button onclick="joinGroup()">3. Join Group (Needs Token)</button>
+    <button onclick="sendMessage()">4. Send Message (Needs Token)</button>
+    <button onclick="getMessages()">5. Get Messages</button>
+
+    <pre id="result"></pre>
+
+    <script>
+      let token = ""; // Store token here
+
+      async function createUser() {
+        const response = await fetch("http://localhost:8000/users", {
+          method: "POST",
+        });
+        const data = await response.json();
+
+        if (data.token) {
+          token = data.token; // Save the token!
+          document.getElementById("result").textContent =
+            "User created! Token saved:\n" + JSON.stringify(data, null, 2);
+        }
+      }
+
+      async function createGroup() {
+        const response = await fetch("http://localhost:8000/groups", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "JWT Test Group" }),
+        });
+        const data = await response.json();
+        document.getElementById("result").textContent =
+          "Group created:\n" + JSON.stringify(data, null, 2);
+      }
+
+      async function joinGroup() {
+        if (!token) {
+          alert("Create a user first to get a token!");
+          return;
+        }
+
+        const response = await fetch("http://localhost:8000/groups/1/join", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token, // ← Send token!
+          },
+        });
+        const data = await response.json();
+        document.getElementById("result").textContent =
+          "Join result:\n" + JSON.stringify(data, null, 2);
+      }
+
+      async function sendMessage() {
+        if (!token) {
+          alert("Create a user first to get a token!");
+          return;
+        }
+
+        const response = await fetch(
+          "http://localhost:8000/groups/1/messages",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token, // ← Send token!
+            },
+            body: JSON.stringify({ message: "Hello with JWT!" }),
+          },
+        );
+        const data = await response.json();
+        document.getElementById("result").textContent =
+          "Message sent:\n" + JSON.stringify(data, null, 2);
+      }
+
+      async function getMessages() {
+        const response = await fetch("http://localhost:8000/groups/1/messages");
+        const data = await response.json();
+        document.getElementById("result").textContent =
+          "Messages:\n" + JSON.stringify(data, null, 2);
+      }
+    </script>
+  </body>
+</html>
